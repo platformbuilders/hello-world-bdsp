@@ -4,9 +4,8 @@ metadata:
   name: hello-java
   namespace: default
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 80
-      targetPort: 8080
   selector:
     app: hello-java

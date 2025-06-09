@@ -1,11 +1,11 @@
 name: Build and Deploy to GCP
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
-    paths:
-      - '**'
   workflow_dispatch:
 
 env:
