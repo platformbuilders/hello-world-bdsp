@@ -1,59 +1,26 @@
-name: Build and Deploy to GCP
+name: Application CI/CD Pipeline
 
 on:
   pull_request:
     types:
       - closed
     branches:
-      - main
-  workflow_dispatch:
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: us-central1
-  REPOSITORY: hello-app
-  IMAGE_NAME: hello-java
+      - master
+      - 'release/**'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  pipeline:
+    if: github.event.pull_request.merged == true
+    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@main
 
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+    with:
+      java_version: '17'
+      git_ref: ${{ github.ref }}
+      is_production_branch: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
+#      SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
 
-      - name: Setup JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
-      - name: Build and push Docker image
-        run: |
-          IMAGE_URI=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
-
-      - name: Update manifests with new image
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-          IMAGE_URI=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
-
-          sed -i "s|image:.*|image: $IMAGE_URI|g" manifests/deployment.yaml
-
-          git add manifests/deployment.yaml
-          git commit -m "Update image to $IMAGE_URI"
-          git push
+    secrets:
+#      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#      SONAR_BDSP_TOKEN: ${{ secrets.SONAR_BDSP_TOKEN }}
+      GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
