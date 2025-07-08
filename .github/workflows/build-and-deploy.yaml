@@ -13,6 +13,10 @@ jobs:
   pipeline:
 #    if: github.event.pull_request.merged == true
     uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@main
+    
+    permissions:
+      contents: read
+      packages: read
 
     with:
       java_version: '17'
