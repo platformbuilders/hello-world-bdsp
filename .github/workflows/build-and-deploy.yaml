@@ -24,3 +24,4 @@ jobs:
 #      SONAR_BDSP_TOKEN: ${{ secrets.SONAR_BDSP_TOKEN }}
       GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
