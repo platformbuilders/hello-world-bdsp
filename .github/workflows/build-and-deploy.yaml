@@ -17,7 +17,8 @@ jobs:
       java_version: '17'
       git_ref: ${{ github.ref }}
       is_production_branch: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-#      SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
+#     SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
+      BITBUCKET_USERNAME: ${{ vars.BITBUCKET_USERNAME }}
 
     secrets:
 #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
