@@ -12,15 +12,17 @@ on:
 jobs:
   pipeline:
 #    if: github.event.pull_request.merged == true
-    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@add/workflow-aws-applications
+    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@migration-bitbucket-pnb
     with:
       java_version: '17'
       git_ref: ${{ github.ref }}
       is_production_branch: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-#      SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
+#     SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
+      BITBUCKET_USERNAME: ${{ vars.BITBUCKET_USERNAME }}
 
     secrets:
 #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 #      SONAR_BDSP_TOKEN: ${{ secrets.SONAR_BDSP_TOKEN }}
       GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
