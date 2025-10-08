@@ -1,7 +1,6 @@
 name: Application CI/CD Pipeline
 
 on:
-  workflow_dispatch:
   pull_request:
     types:
       - closed
@@ -9,20 +8,46 @@ on:
       - master
       - 'release/**'
 
+  workflow_dispatch:
+
 jobs:
+
+  check_permission:
+    name: Verify User Permission
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      is_authorized: ${{ steps.check.outputs.is_authorized }}
+    steps:
+      - name: Check if the user is authorized
+        id: check
+        run: |
+          if [[ ",${{ vars.AUTHORIZED_DEPLOYERS }}," == *",${{ github.actor }},"* ]]; then
+            echo "User ${{ github.actor }} is authorized to deploy."
+            echo "is_authorized=true" >> $GITHUB_OUTPUT
+          else
+            echo "User ${{ github.actor }} is NOT authorized to deploy."
+            exit 1 # Falha o job
+          fi
+
   pipeline:
-#    if: github.event.pull_request.merged == true
-    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@migration-bitbucket-pnb
+    name: Run CI/CD Pipeline
+    needs: [check_permission]
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch' && needs.check_permission.outputs.is_authorized == 'true')
+    
+    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd.yaml@main
+
     with:
-      java_version: '17'
+      java_version: '8'
       git_ref: ${{ github.ref }}
       is_production_branch: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-#     SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
-      BITBUCKET_USERNAME: ${{ vars.BITBUCKET_USERNAME }}
+#      SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
 
     secrets:
 #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 #      SONAR_BDSP_TOKEN: ${{ secrets.SONAR_BDSP_TOKEN }}
-      GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+      GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
