@@ -15,8 +15,8 @@ on:
 jobs:
   pipeline:
     if: |
-      (github.event.name == 'pull_request' && github.event.pull_request.merged == true) ||
-      (github.event.name == 'push' && !startsWith(github.event.head_commit.message, 'Merge '))
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event_name == 'push' && !startsWith(github.event.head_commit.message, 'Merge '))
     
     uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@migration-bitbucket-pnb
 
