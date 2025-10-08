@@ -37,13 +37,14 @@ jobs:
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
       (github.event_name == 'workflow_dispatch' && needs.check_permission.outputs.is_authorized == 'true')
     
-    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@main
+    uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@migration-bitbucket-pnb
 
     with:
       java_version: '8'
       git_ref: ${{ github.ref }}
       is_production_branch: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
 #      SONAR_BDSP_HOST_URL: ${{ vars.SONAR_BDSP_HOST_URL }}
+      BITBUCKET_USERNAME: ${{ vars.BITBUCKET_USERNAME }}
 
     secrets:
 #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
