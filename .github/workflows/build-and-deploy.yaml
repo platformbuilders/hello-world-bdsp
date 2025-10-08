@@ -53,3 +53,4 @@ jobs:
       GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       BITBUCKET_TOKEN: ${{ secrets.BITBUCKET_TOKEN }}
+      
