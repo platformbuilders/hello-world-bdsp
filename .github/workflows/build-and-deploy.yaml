@@ -7,11 +7,11 @@ on:
     branches:
       - master
       - 'release/**'
-      - 'feat/**'
+
   push:
     branches:
       - 'release/**'
-      - 'feat/**'
+      
 jobs:
   pipeline:
     if: |
