@@ -8,35 +8,15 @@ on:
       - master
       - 'release/**'
       - 'feat/**'
-
-  workflow_dispatch:
-
+  push:
+    branches:
+      - 'release/**'
+      - 'feat/**'
 jobs:
-
-  check_permission:
-    name: Verify User Permission
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    outputs:
-      is_authorized: ${{ steps.check.outputs.is_authorized }}
-    steps:
-      - name: Check if the user is authorized
-        id: check
-        run: |
-          if [[ ",${{ vars.AUTHORIZED_DEPLOYERS }}," == *",${{ github.actor }},"* ]]; then
-            echo "User ${{ github.actor }} is authorized to deploy."
-            echo "is_authorized=true" >> $GITHUB_OUTPUT
-          else
-            echo "User ${{ github.actor }} is NOT authorized to deploy."
-            exit 1 # Falha o job
-          fi
-
   pipeline:
-    name: Run CI/CD Pipeline
-    needs: [check_permission]
     if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
-      (github.event_name == 'workflow_dispatch' && needs.check_permission.outputs.is_authorized == 'true')
+      (github.event.name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event.name == 'push' && !startsWith(github.event.head_commit.message, 'Merge '))
     
     uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@migration-bitbucket-pnb
 
