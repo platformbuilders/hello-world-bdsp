@@ -1,4 +1,4 @@
-# Hello Java - Pefisa/PNB
+# Hello Java - Pefisa/PNB - branch teste 2
 
 Aplicação Java simples com Spring Boot, desenvolvida para testar o fluxo de build, deploy e publicação das aplicações da **Pefisa/PNB** utilizando GitHub Actions, Google Artifact Registry e Kubernetes com GitOps.
 
