@@ -11,7 +11,7 @@ on:
 
 jobs:
   pipeline:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == false
     uses: platformbuilders/github-actions-bdsp-templates/.github/workflows/maven-ci-cd-hml.yaml@main
     with:
       java_version: '17'
